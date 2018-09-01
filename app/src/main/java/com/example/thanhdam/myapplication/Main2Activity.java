@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +22,7 @@ import java.util.List;
 public class Main2Activity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION = 1;
     GridView gridView;
+    GridAdapter gridAdapter;
     FloatingActionButton fabAdd;
 
     @Override
@@ -41,9 +43,9 @@ public class Main2Activity extends AppCompatActivity {
         gridView = findViewById(R.id.gv_demo);
         fabAdd = findViewById(R.id.fab_add);
 
-        List<ImageModel> imageModels = DataManager.getInstances(this).getListImage();
+        List<StoryModel> storyModels = DataManager.getInstances(this).getListStory();
 
-        GridAdapter gridAdapter = new GridAdapter(this, imageModels);
+        gridAdapter = new GridAdapter(this, storyModels);
         gridView.setAdapter(gridAdapter);
 
         fabAdd.setOnClickListener(new View.OnClickListener() {
@@ -82,5 +84,15 @@ public class Main2Activity extends AppCompatActivity {
                         .show();
             }
         }
+    }
+
+    @Override // thuc hien hanh dong moi khi quay tro lai activity : nho noi dung truoo
+    protected void onStart() {
+        super.onStart();
+        // lay list data
+        List<StoryModel> storyModels = DataManager.getInstances(this).getListStory();
+        // cho data len grid view
+        gridAdapter = new GridAdapter(this, storyModels);
+        gridView.setAdapter(gridAdapter); // hien thi
     }
 }
