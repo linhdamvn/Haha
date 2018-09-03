@@ -36,7 +36,27 @@
        <LinearLayout
            android:layout_width="match_parent"
            android:layout_height="0dp"
-           android:layout_weight="6">
+           android:layout_weight="6"
+           android:orientation="vertical">
+
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="Title"
+               android:id="@+id/tv_title"
+               android:padding="6dp"
+               android:textSize="18sp"
+               android:textStyle="bold"
+               android:textColor="#100"/>
+
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/tv_content"
+               android:text="content"
+               android:textSize="14sp"
+               android:textColor="#100"
+               android:padding="6dp"/>
 
        </LinearLayout>
 
@@ -47,9 +67,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:id="@+id/fb_play"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         android:src="@drawable/ic_play_arrow_black_24dp"/>
+
 
 </android.support.constraint.ConstraintLayout>

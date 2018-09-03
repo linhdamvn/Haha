@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +21,10 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Calendar;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
@@ -33,7 +36,13 @@ public class MainActivity extends AppCompatActivity {
     EditText etTittle;
     String path;
     EditText etContent;
+    FloatingActionButton fbRecord;
+    boolean isplaying = true;
     private int GALLERY = 1;
+    MediaRecorder mediaRecorder;
+    private static final String AUDIO_DIRECTORY = "/storyAudio";// tao bien cuc bo, duong dan
+    String audioPath = null; // dan toi audio
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         etTittle = findViewById(R.id.et_title);
+        fbRecord = findViewById(R.id.fb_record);
 
         // Nhan anh - chon anh tu thu vien
         ivRecord.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +83,58 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Story saved!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        fbRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isplaying) { // neu dang choi = true
+                    isplaying = false; // chuyen thanh false
+                    fbRecord.setImageResource(R.drawable.ic_pause_black_24dp);// chuyen hinh anh
+                    startrecord(); // dinh nghia duoi
+                }
+                else{
+                    isplaying = true;
+                    fbRecord.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+                    stoprecord();
+                }
+
+            }
+        });
+
     }
 
+    private void startrecord() {
+        // su dung thu vien media recorder
+        mediaRecorder = new MediaRecorder(); // khoi tao o nho trong may
+        audioPath = Environment.getExternalStorageDirectory().getAbsolutePath() + AUDIO_DIRECTORY; // dan toi folder + folder ten laf audio_directory
+        File file = new File(audioPath);
+        if (!file.exists()){ // neu file khong ton tai thi tao file
+            file.mkdir();
+        }
+        audioPath += "/" + Calendar.getInstance().getTimeInMillis() + ".3gp"; // Cho ra day so dua tren thoi diem hien tai
+        Log.d(TAG, "startrecord: " + audioPath);
+
+        // khoi tao cac thong so
+        mediaRecorder.setOutputFile(audioPath);
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC); // lay nguon am thanh tu mic
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try{
+            mediaRecorder.prepare();
+        } catch ( IOException e)
+        {
+
+        }
+
+        mediaRecorder.start();
+    }
+
+    private void stoprecord(){
+        mediaRecorder.stop();
+        mediaRecorder.release(); // huy starreocord
+        mediaRecorder = null;
+    }
     @Override // xu ly lai
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

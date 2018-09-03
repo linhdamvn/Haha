@@ -36,6 +36,14 @@
         android:layout_below="@id/iv_back"
         android:hint="Enter story tittle"
         android:padding="18dp" />
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_record"
+        android:layout_centerHorizontal="true"
+        android:padding="6dp"
+        android:id="@+id/fb_record"
+        android:src="@drawable/ic_play_arrow_black_24dp"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
