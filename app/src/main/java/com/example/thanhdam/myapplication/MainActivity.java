@@ -76,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String name = etTittle.getText().toString();
                 String content = etContent.getText().toString();
-                String audio = "";
-                StoryModel storyModel = new StoryModel(name, path, content, audio);
+                StoryModel storyModel = new StoryModel(name, path, content, audioPath);
                 DataManager.getInstances(MainActivity.this).saveData(storyModel);
                 long count = DataManager.getInstances(MainActivity.this).getNumOfData();
                 Toast.makeText(MainActivity.this, "Story saved!", Toast.LENGTH_SHORT).show();

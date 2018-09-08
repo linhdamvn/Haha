@@ -2,6 +2,7 @@ package com.example.thanhdam.myapplication;
 
 // bieu dien main page
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -48,7 +49,7 @@ public class GridAdapter extends BaseAdapter{
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         view = inflater.inflate(R.layout.item,viewGroup, false);
 
-        StoryModel storyModel = storyModels.get(i);
+        final StoryModel storyModel = storyModels.get(i);
 
         ImageView imageView = view.findViewById(R.id.iv_image);
         TextView textView = view.findViewById(R.id.tv_textview);
@@ -57,6 +58,19 @@ public class GridAdapter extends BaseAdapter{
 
         Bitmap bitmap = BitmapFactory.decodeFile(storyModel.image);
         imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap,150, 150, false));
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ReadActivity.class); // Intent = chuyen activity nay sang khac, o main sang man hinh doc= Readactivity
+                intent.putExtra("tittle", storyModel.name); // gan key tittle 1 gia tri name
+                intent.putExtra("image", storyModel.image);
+                intent.putExtra("story", storyModel.content);
+                intent.putExtra("audio", storyModel.audio);
+                Log.d(TAG, "onClick: " + storyModel.audio);
+                context.startActivity(intent);
+            }
+        });
 
         return view;
     }
