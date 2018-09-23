@@ -46,7 +46,7 @@ public class GridAdapter extends BaseAdapter{
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+        final LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         view = inflater.inflate(R.layout.item,viewGroup, false);
 
         final StoryModel storyModel = storyModels.get(i);
@@ -56,8 +56,26 @@ public class GridAdapter extends BaseAdapter{
 
         textView.setText(storyModel.name);
 
-        Bitmap bitmap = BitmapFactory.decodeFile(storyModel.image);
-        imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap,150, 150, false));
+        ImageView changebutton = view.findViewById(R.id.iv_changebutton);
+        changebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("change", "true");
+                intent.putExtra("id", 1);
+                intent.putExtra("tittle", storyModel.name);
+                intent.putExtra("content", storyModel.content);
+                intent.putExtra("image", storyModel.image);
+                intent.putExtra("audio", storyModel.audio);
+                context.startActivity(intent);
+            }
+        });
+
+        if (storyModel.image == null) imageView.setBackgroundResource(R.drawable.round);
+        else {
+            Bitmap bitmap = BitmapFactory.decodeFile(storyModel.image);
+            imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 150, 150, false));
+        }
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

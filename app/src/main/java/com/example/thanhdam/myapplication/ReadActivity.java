@@ -49,8 +49,11 @@ public class ReadActivity extends AppCompatActivity {
         //8/9
         tvTittle.setText(tittle);  // truyen thong tin
         tvContent.setText(story);
-        Bitmap bitmap = BitmapFactory.decodeFile(image);  //set anh lay tu //1
-        igView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 300, 250, false)); //createScaledBitmap - tra ve bitmap nhan duoc va scale lai
+        if (image == null) igView.setBackgroundResource(R.drawable.round);
+        else {
+            Bitmap bitmap = BitmapFactory.decodeFile(image);  //set anh lay tu //1
+            igView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 300, 250, false)); //createScaledBitmap - tra ve bitmap nhan duoc va scale lai
+        }
 
         fbPlay.setOnClickListener(new View.OnClickListener() {
             @Override

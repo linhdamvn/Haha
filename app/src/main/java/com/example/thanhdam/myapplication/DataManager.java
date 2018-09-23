@@ -72,7 +72,18 @@ public class DataManager {
         contentValues.put("image", storyModel.image);
         contentValues.put("content", storyModel.content);
         contentValues.put("audio", storyModel.audio);
-        Log.d(TAG, "saveData: " + storyModel.image);
         sqLiteDatabase.insert(TABLE_DATA, null, contentValues);
+    }
+
+    public void updateData(StoryModel storyModel, int id)
+    {
+        sqLiteDatabase = assetHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", storyModel.name);
+        contentValues.put("image", storyModel.image);
+        contentValues.put("content", storyModel.content);
+        contentValues.put("audio", storyModel.audio);
+        Log.d(TAG, "updateData: " + storyModel.name);
+        sqLiteDatabase.update(TABLE_DATA, contentValues, "_id="+id, null);
     }
 }

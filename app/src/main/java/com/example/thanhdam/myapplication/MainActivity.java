@@ -35,11 +35,14 @@ public class MainActivity extends AppCompatActivity {
     ImageView ivCheck;
     EditText etTittle;
     String path;
+    boolean isChange = false;
     EditText etContent;
     FloatingActionButton fbRecord;
     boolean isplaying = true;
     private int GALLERY = 1;
     MediaRecorder mediaRecorder;
+    StoryModel Pstorymodel;
+    int PId;
     private static final String AUDIO_DIRECTORY = "/storyAudio";// tao bien cuc bo, duong dan
     String audioPath = null; // dan toi audio
 
@@ -47,6 +50,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        final String change = data.getString("change");
+        if (change.equals("true")) {
+            isChange = true;
+            String name = data.getString("tittle");
+            String content = data.getString("content");
+            String image = data.getString("image");
+            String audio = data.getString("audio");
+            PId = data.getInt("id");
+            Pstorymodel = new StoryModel(name, image, content, audio);
+            Log.d(TAG, "onCreate: " + Pstorymodel.name + " " + Pstorymodel.content + " " + Pstorymodel.image + " " + Pstorymodel.audio + " " + PId);
+        }
 
         ivCheck = findViewById(R.id.iv_check);
         ivRecord = findViewById(R.id.iv_record);
@@ -62,6 +79,22 @@ public class MainActivity extends AppCompatActivity {
         etTittle = findViewById(R.id.et_title);
         fbRecord = findViewById(R.id.fb_record);
 
+
+        if (change.equals("true"))
+        {
+            etTittle.setText(Pstorymodel.name);
+            etContent.setText(Pstorymodel.content);
+
+            if (Pstorymodel.image != null)
+            {
+                Bitmap bitmap = BitmapFactory.decodeFile(Pstorymodel.image);
+                ivRecord.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 150, 150, false));
+            }
+
+            audioPath = Pstorymodel.audio;
+            path = Pstorymodel.image;
+        }
+
         // Nhan anh - chon anh tu thu vien
         ivRecord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,12 +107,15 @@ public class MainActivity extends AppCompatActivity {
         ivCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = etTittle.getText().toString();
-                String content = etContent.getText().toString();
-                StoryModel storyModel = new StoryModel(name, path, content, audioPath);
-                DataManager.getInstances(MainActivity.this).saveData(storyModel);
-                long count = DataManager.getInstances(MainActivity.this).getNumOfData();
-                Toast.makeText(MainActivity.this, "Story saved!", Toast.LENGTH_SHORT).show();
+                if (change.equals("true")) update();
+                else {
+                    String name = etTittle.getText().toString();
+                    String content = etContent.getText().toString();
+                    StoryModel storyModel = new StoryModel(name, path, content, audioPath);
+                    DataManager.getInstances(MainActivity.this).saveData(storyModel);
+                    long count = DataManager.getInstances(MainActivity.this).getNumOfData();
+                    Toast.makeText(MainActivity.this, "Story saved!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -127,6 +163,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mediaRecorder.start();
+    }
+
+    private void update()
+    {
+        Pstorymodel.name = etTittle.getText().toString();
+        Pstorymodel.content = etContent.getText().toString();
+        Pstorymodel.image = path;
+        Pstorymodel.audio = audioPath;
+        DataManager.getInstances(this).updateData(Pstorymodel, PId);
+        Toast.makeText(MainActivity.this, "Story updated", Toast.LENGTH_SHORT).show();
     }
 
     private void stoprecord(){

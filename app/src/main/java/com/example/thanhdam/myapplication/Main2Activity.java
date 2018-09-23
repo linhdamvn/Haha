@@ -30,15 +30,24 @@ public class Main2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_PERMISSION
-            );
+       String[] permissions = {
+               Manifest.permission.READ_EXTERNAL_STORAGE,
+               Manifest.permission.RECORD_AUDIO
+       };
+        boolean ok = true;
+        for (String permission : permissions){
+            if (ContextCompat.checkSelfPermission(this,permission)
+                    != PackageManager.PERMISSION_GRANTED){
+                ok = false;
+            }
         }
+
+        if (!ok)
+        {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION);
+        }
+
+
 
         gridView = findViewById(R.id.gv_demo);
         fabAdd = findViewById(R.id.fab_add);
@@ -52,16 +61,19 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Main2Activity.this, MainActivity.class); //nhay tu activity 2 sang 1
+                intent.putExtra("change", "false");
                 Main2Activity.this.startActivity(intent);
             }
         });
     }
 
+
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION){
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED){
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED || grantResults[1] == PackageManager.PERMISSION_DENIED){
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Warning!")
                         .setMessage("Without permission you can not use this app." + "Do you want to grant permission?")
@@ -70,7 +82,8 @@ public class Main2Activity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 ActivityCompat.requestPermissions(
                                         Main2Activity.this,
-                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                Manifest.permission.RECORD_AUDIO},
                                         REQUEST_PERMISSION
                                 );
                             }
